@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { generatePlanetTexture, generateRingTexture } from './textureGenerator.js?v=3.0.0';
+import { generatePlanetTexture, generateRingTexture } from './textureGenerator.js?v=7.0.0';
 
 export class GalaxyScene {
   constructor(containerId) {
@@ -8,11 +8,13 @@ export class GalaxyScene {
     this.planetsMap = new Map();
     this.planetMeshes = [];
     this.hyperlaneLines = [];
+    this.mapOverlayMesh = null;
     
     this.initScene();
     this.initGalaxyBackground();
     this.initGridOverlay();
     this.initRegionRings();
+    this.initOverlayMap();
     this.initLighting();
     
     window.addEventListener('resize', () => this.onWindowResize());
@@ -51,7 +53,6 @@ export class GalaxyScene {
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
     this.scene.add(ambientLight);
 
-    // Deep Core center light
     const coreLight = new THREE.PointLight(0xffedd5, 3.0, 400);
     coreLight.position.set(0, 0, 0);
     this.scene.add(coreLight);
@@ -62,7 +63,6 @@ export class GalaxyScene {
   }
 
   initGalaxyBackground() {
-    // Dimmed background galaxy particle cloud
     const particleCount = 40000;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
@@ -110,7 +110,6 @@ export class GalaxyScene {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // DIMMED PARTICLES: Opacity = 0.12, Size = 0.6 so planets are ultra easy to locate!
     const particleMaterial = new THREE.PointsMaterial({
       size: 0.6,
       vertexColors: true,
@@ -122,7 +121,6 @@ export class GalaxyScene {
     this.galaxyPoints = new THREE.Points(geometry, particleMaterial);
     this.scene.add(this.galaxyPoints);
 
-    // Dimmed deep space background stars
     const starCount = 4000;
     const starGeo = new THREE.BufferGeometry();
     const starPos = new Float32Array(starCount * 3);
@@ -152,7 +150,6 @@ export class GalaxyScene {
   }
 
   initGridOverlay() {
-    // Discrete, clear C-1 to U-21 grid overlay
     const gridGroup = new THREE.Group();
     const gridMaterial = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
@@ -211,6 +208,34 @@ export class GalaxyScene {
     });
   }
 
+  initOverlayMap() {
+    const loader = new THREE.TextureLoader();
+    loader.load('./data/star_wars_galaxy_map_4000x4000_20251009_3c4d0e08.jpeg', (texture) => {
+      const geo = new THREE.PlaneGeometry(400, 400);
+      const mat = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        opacity: 0.65,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      });
+
+      this.mapOverlayMesh = new THREE.Mesh(geo, mat);
+      this.mapOverlayMesh.rotation.x = -Math.PI / 2;
+      this.mapOverlayMesh.position.set(0, -0.8, 0);
+      this.mapOverlayMesh.visible = false; // Hidden by default
+
+      this.scene.add(this.mapOverlayMesh);
+    });
+  }
+
+  toggleMapOverlay(visible, opacity = 0.65) {
+    if (this.mapOverlayMesh) {
+      this.mapOverlayMesh.visible = visible;
+      this.mapOverlayMesh.material.opacity = opacity;
+    }
+  }
+
   parseGridToCoords(gridStr) {
     if (!gridStr || typeof gridStr !== 'string') return { x: 0, y: 0, z: 0 };
     const match = gridStr.trim().toUpperCase().match(/^([A-Z]+)-?(\d+)$/);
@@ -231,7 +256,6 @@ export class GalaxyScene {
     const sphereGeo = new THREE.SphereGeometry(3.2, 32, 32);
 
     planetsData.forEach((planet) => {
-      // Automatic Grid (e.g. "R-16") to 3D Coordinates converter
       if (!planet.coords || typeof planet.coords.x !== 'number') {
         planet.coords = this.parseGridToCoords(planet.grid);
       }
@@ -310,7 +334,6 @@ export class GalaxyScene {
   }
 
   loadHyperlanes(hyperlanesData) {
-    // REAL CURVED HYPERLANES: Rendered using 3D CatmullRom curves!
     hyperlanesData.forEach((lane) => {
       const waypoints = [];
       lane.waypoints.forEach((planetId) => {
@@ -321,7 +344,6 @@ export class GalaxyScene {
       });
 
       if (waypoints.length >= 2) {
-        // Generate smooth CatmullRom curve through planet waypoints
         const curve = new THREE.CatmullRomCurve3(waypoints, false, 'catmullrom', 0.5);
         const curvePoints = curve.getPoints(100);
 

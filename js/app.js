@@ -1,5 +1,5 @@
-import { GalaxyScene } from './galaxyScene.js?v=6.0.0';
-import { InteractionHandler } from './interaction.js?v=6.0.0';
+import { GalaxyScene } from './galaxyScene.js?v=7.0.0';
+import { InteractionHandler } from './interaction.js?v=7.0.0';
 
 class StarWarsGalaxyApp {
   constructor() {
@@ -105,6 +105,17 @@ class StarWarsGalaxyApp {
     const btnAudio = document.getElementById('btn-audio');
     if (btnAudio) {
       btnAudio.addEventListener('click', () => this.toggleSciFiAudio(btnAudio));
+    }
+
+    // 7. 2D Map Superposition Overlay Toggle
+    const btnMapOverlay = document.getElementById('btn-map-overlay');
+    if (btnMapOverlay) {
+      this.mapOverlayVisible = false;
+      btnMapOverlay.addEventListener('click', () => {
+        this.mapOverlayVisible = !this.mapOverlayVisible;
+        btnMapOverlay.classList.toggle('active', this.mapOverlayVisible);
+        this.galaxyScene.toggleMapOverlay(this.mapOverlayVisible, 0.7);
+      });
     }
   }
 
