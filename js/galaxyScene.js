@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { generatePlanetTexture, generateRingTexture } from './textureGenerator.js';
+import { generatePlanetTexture, generateRingTexture } from './textureGenerator.js?v=1.0.1';
 
 export class GalaxyScene {
   constructor(containerId) {
@@ -38,6 +38,8 @@ export class GalaxyScene {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.05;
+    this.controls.autoRotate = false;
+    this.controls.autoRotateSpeed = 0.0;
     this.controls.maxDistance = 600;
     this.controls.minDistance = 5;
     this.controls.maxPolarAngle = Math.PI / 2 + 0.1; // Allow slightly below horizon

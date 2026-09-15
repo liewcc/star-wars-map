@@ -1,5 +1,5 @@
-import { GalaxyScene } from './galaxyScene.js';
-import { InteractionHandler } from './interaction.js';
+import { GalaxyScene } from './galaxyScene.js?v=1.0.1';
+import { InteractionHandler } from './interaction.js?v=1.0.1';
 
 class StarWarsGalaxyApp {
   constructor() {
