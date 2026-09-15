@@ -3,30 +3,36 @@
     "id": "perlemian",
     "name": "1. Perlemian Trade Route",
     "color": "#00f0ff",
-    "waypoints": ["coruscant", "chandrila", "kashyyyk", "yavin-4", "felucia", "mon-cala"]
+    "waypoints": ["coruscant", "chandrila", "ord-mantell", "kashyyyk", "yavin-4", "felucia", "mon-cala"]
   },
   {
     "id": "corellian-run",
     "name": "2. Corellian Run",
     "color": "#ff2a2a",
-    "waypoints": ["coruscant", "corellia", "hosnian-prime", "scarif", "geonosis", "tatooine"]
+    "waypoints": ["coruscant", "corellia", "hosnian-prime", "scarif", "geonosis", "tatooine", "ryloth"]
   },
   {
     "id": "corellian-spine",
     "name": "3. Corellian Trade Spine",
     "color": "#ffea00",
-    "waypoints": ["corellia", "takodana", "bespin", "hoth"]
+    "waypoints": ["corellia", "takodana", "endor", "bespin", "hoth"]
   },
   {
     "id": "rimma-trade-route",
     "name": "4. Rimma Trade Route",
     "color": "#00ff66",
-    "waypoints": ["tython", "dagobah", "utapau", "mustafar"]
+    "waypoints": ["tython", "sullust", "eriadu", "dagobah", "utapau", "mustafar"]
   },
   {
     "id": "hydian-way",
     "name": "5. Hydian Way",
     "color": "#d000ff",
-    "waypoints": ["cantonica", "yavin-4", "mandalore", "dathomir", "lothal", "alderaan", "kuat", "mustafar"]
+    "waypoints": ["cantonica", "yavin-4", "dathomir", "mandalore", "lothal", "kuat", "alderaan", "corellia", "eriadu", "mustafar"]
+  },
+  {
+    "id": "sith-wayfinder",
+    "name": "6. Sith Wayfinder Path",
+    "color": "#ff0055",
+    "waypoints": ["coruscant", "jedha", "jakku", "ahch-to", "csilla", "exegol"]
   }
 ]

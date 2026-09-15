@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { generatePlanetTexture, generateRingTexture } from './textureGenerator.js?v=1.0.2';
+import { generatePlanetTexture, generateRingTexture } from './textureGenerator.js?v=3.0.0';
 
 export class GalaxyScene {
   constructor(containerId) {
@@ -20,7 +20,7 @@ export class GalaxyScene {
 
   initScene() {
     this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.FogExp2(0x02040a, 0.0012);
+    this.scene.fog = new THREE.FogExp2(0x010308, 0.001);
 
     this.camera = new THREE.PerspectiveCamera(
       50,
@@ -28,7 +28,7 @@ export class GalaxyScene {
       0.1,
       3000
     );
-    this.camera.position.set(0, 260, 320);
+    this.camera.position.set(0, 250, 310);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -48,31 +48,30 @@ export class GalaxyScene {
   }
 
   initLighting() {
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
     this.scene.add(ambientLight);
 
-    // Deep Core intense gold point light
-    const coreLight = new THREE.PointLight(0xffedd5, 4.0, 500);
+    // Deep Core center light
+    const coreLight = new THREE.PointLight(0xffedd5, 3.0, 400);
     coreLight.position.set(0, 0, 0);
     this.scene.add(coreLight);
 
-    const dirLight = new THREE.DirectionalLight(0x818cf8, 1.4);
+    const dirLight = new THREE.DirectionalLight(0x818cf8, 1.5);
     dirLight.position.set(100, 250, 100);
     this.scene.add(dirLight);
   }
 
   initGalaxyBackground() {
-    // Star Wars Official Map Colors & Particle Distribution
-    const particleCount = 55000;
+    // Dimmed background galaxy particle cloud
+    const particleCount = 40000;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const colorCore = new THREE.Color(0xfffbeb); // Deep Core bright white/gold
-    const colorInner = new THREE.Color(0xfbbf24); // Core/Colonies amber
-    const colorMid = new THREE.Color(0xa855f7); // Mid Rim purple
-    const colorOuter = new THREE.Color(0x38bdf8); // Outer Rim blue
-    const colorUnknown = new THREE.Color(0x06b6d4); // Unknown Regions cyan
+    const colorCore = new THREE.Color(0xfffbeb);
+    const colorInner = new THREE.Color(0xfbbf24);
+    const colorMid = new THREE.Color(0xa855f7);
+    const colorOuter = new THREE.Color(0x38bdf8);
 
     const arms = 4;
     const radius = 260;
@@ -94,12 +93,8 @@ export class GalaxyScene {
       positions[i * 3 + 1] = randomY;
       positions[i * 3 + 2] = pz;
 
-      // Determine color based on position (matching DK Official Map)
       const mixedColor = colorCore.clone();
-      if (px < -40 && Math.abs(pz) < 140) {
-        // Unknown Regions sector (West)
-        mixedColor.lerp(colorUnknown, Math.min(1, Math.abs(px) / 180));
-      } else if (r < 30) {
+      if (r < 30) {
         mixedColor.lerp(colorInner, r / 30);
       } else if (r < 110) {
         mixedColor.lerp(colorMid, (r - 30) / 80);
@@ -115,19 +110,20 @@ export class GalaxyScene {
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
+    // DIMMED PARTICLES: Opacity = 0.12, Size = 0.6 so planets are ultra easy to locate!
     const particleMaterial = new THREE.PointsMaterial({
-      size: 1.3,
+      size: 0.6,
       vertexColors: true,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.12,
       blending: THREE.AdditiveBlending
     });
 
     this.galaxyPoints = new THREE.Points(geometry, particleMaterial);
     this.scene.add(this.galaxyPoints);
 
-    // Deep space background stars
-    const starCount = 8000;
+    // Dimmed deep space background stars
+    const starCount = 4000;
     const starGeo = new THREE.BufferGeometry();
     const starPos = new Float32Array(starCount * 3);
 
@@ -146,9 +142,9 @@ export class GalaxyScene {
     starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
     const starMat = new THREE.PointsMaterial({
       color: 0xffffff,
-      size: 1.0,
+      size: 0.8,
       transparent: true,
-      opacity: 0.5
+      opacity: 0.08
     });
 
     const starField = new THREE.Points(starGeo, starMat);
@@ -156,15 +152,14 @@ export class GalaxyScene {
   }
 
   initGridOverlay() {
-    // Official C-1 to U-21 Grid Overlay Lines
+    // Discrete, clear C-1 to U-21 grid overlay
     const gridGroup = new THREE.Group();
     const gridMaterial = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.12
+      opacity: 0.08
     });
 
-    // 19 Columns (C to U: -180 to 180, step 20)
     for (let x = -180; x <= 180; x += 20) {
       const points = [
         new THREE.Vector3(x, -0.5, -200),
@@ -175,7 +170,6 @@ export class GalaxyScene {
       gridGroup.add(line);
     }
 
-    // 21 Rows (1 to 21: -200 to 200, step 20)
     for (let z = -200; z <= 200; z += 20) {
       const points = [
         new THREE.Vector3(-180, -0.5, z),
@@ -190,13 +184,12 @@ export class GalaxyScene {
   }
 
   initRegionRings() {
-    // Official Concentric Region Boundary Rings (Deep Core -> Outer Rim)
     const regions = [
-      { radius: 25, color: 0xef4444, label: 'DEEP CORE' },
-      { radius: 55, color: 0xf59e0b, label: 'CORE WORLDS' },
-      { radius: 85, color: 0x10b981, label: 'INNER RIM' },
-      { radius: 125, color: 0x8b5cf6, label: 'MID RIM' },
-      { radius: 200, color: 0x38bdf8, label: 'OUTER RIM' }
+      { radius: 25, color: 0xef4444 },
+      { radius: 55, color: 0xf59e0b },
+      { radius: 85, color: 0x10b981 },
+      { radius: 125, color: 0x8b5cf6 },
+      { radius: 200, color: 0x38bdf8 }
     ];
 
     regions.forEach((reg) => {
@@ -207,7 +200,7 @@ export class GalaxyScene {
       const material = new THREE.LineDashedMaterial({
         color: reg.color,
         transparent: true,
-        opacity: 0.35,
+        opacity: 0.20,
         dashSize: 4,
         gapSize: 4
       });
@@ -219,7 +212,8 @@ export class GalaxyScene {
   }
 
   loadPlanets(planetsData) {
-    const sphereGeo = new THREE.SphereGeometry(2.8, 32, 32);
+    // Increased planet mesh size to 3.2 for crisp readability!
+    const sphereGeo = new THREE.SphereGeometry(3.2, 32, 32);
 
     planetsData.forEach((planet) => {
       const canvasTexture = generatePlanetTexture(planet.type, planet.id);
@@ -227,8 +221,9 @@ export class GalaxyScene {
 
       const material = new THREE.MeshStandardMaterial({
         map: texture,
-        roughness: 0.6,
-        metalness: 0.1
+        roughness: 0.5,
+        metalness: 0.2,
+        emissive: new THREE.Color(0x222222)
       });
 
       const mesh = new THREE.Mesh(sphereGeo, material);
@@ -239,14 +234,14 @@ export class GalaxyScene {
       mesh.add(glowSprite);
 
       if (planet.type === 'ringed') {
-        const ringGeo = new THREE.RingGeometry(4.0, 7.0, 32);
+        const ringGeo = new THREE.RingGeometry(4.5, 8.0, 32);
         const ringCanvas = generateRingTexture();
         const ringTex = new THREE.CanvasTexture(ringCanvas);
         const ringMat = new THREE.MeshBasicMaterial({
           map: ringTex,
           side: THREE.DoubleSide,
           transparent: true,
-          opacity: 0.85
+          opacity: 0.9
         });
         const ringMesh = new THREE.Mesh(ringGeo, ringMat);
         ringMesh.rotation.x = Math.PI / 2;
@@ -265,14 +260,14 @@ export class GalaxyScene {
     canvas.height = 64;
     const ctx = canvas.getContext('2d');
 
-    let glowColor = 'rgba(56, 189, 248, 0.45)';
-    if (type === 'desert') glowColor = 'rgba(234, 179, 8, 0.4)';
-    if (type === 'lava') glowColor = 'rgba(239, 68, 68, 0.6)';
-    if (type === 'ice') glowColor = 'rgba(224, 242, 254, 0.45)';
-    if (type === 'city') glowColor = 'rgba(251, 191, 36, 0.45)';
-    if (type === 'forest') glowColor = 'rgba(74, 222, 128, 0.45)';
+    let glowColor = 'rgba(56, 189, 248, 0.6)';
+    if (type === 'desert') glowColor = 'rgba(234, 179, 8, 0.6)';
+    if (type === 'lava') glowColor = 'rgba(239, 68, 68, 0.7)';
+    if (type === 'ice') glowColor = 'rgba(224, 242, 254, 0.6)';
+    if (type === 'city') glowColor = 'rgba(251, 191, 36, 0.6)';
+    if (type === 'forest') glowColor = 'rgba(74, 222, 128, 0.6)';
 
-    const grad = ctx.createRadialGradient(32, 32, 14, 32, 32, 32);
+    const grad = ctx.createRadialGradient(32, 32, 12, 32, 32, 32);
     grad.addColorStop(0, glowColor);
     grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
@@ -286,36 +281,38 @@ export class GalaxyScene {
       blending: THREE.AdditiveBlending
     });
     const sprite = new THREE.Sprite(spriteMat);
-    sprite.scale.set(8.5, 8.5, 1.0);
+    sprite.scale.set(10.0, 10.0, 1.0);
     return sprite;
   }
 
   loadHyperlanes(hyperlanesData) {
+    // REAL CURVED HYPERLANES: Rendered using 3D CatmullRom curves!
     hyperlanesData.forEach((lane) => {
-      const points = [];
-      for (let i = 0; i < lane.waypoints.length - 1; i++) {
-        const planetA = this.planetsMap.get(lane.waypoints[i]);
-        const planetB = this.planetsMap.get(lane.waypoints[i + 1]);
-
-        if (planetA && planetB) {
-          points.push(planetA.position.clone());
-          points.push(planetB.position.clone());
+      const waypoints = [];
+      lane.waypoints.forEach((planetId) => {
+        const planet = this.planetsMap.get(planetId);
+        if (planet) {
+          waypoints.push(planet.position.clone());
         }
-      }
+      });
 
-      if (points.length > 0) {
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      if (waypoints.length >= 2) {
+        // Generate smooth CatmullRom curve through planet waypoints
+        const curve = new THREE.CatmullRomCurve3(waypoints, false, 'catmullrom', 0.5);
+        const curvePoints = curve.getPoints(100);
+
+        const geometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
         const material = new THREE.LineBasicMaterial({
           color: new THREE.Color(lane.color),
           transparent: true,
-          opacity: 0.8,
+          opacity: 0.85,
           linewidth: 3
         });
 
-        const lineSegments = new THREE.LineSegments(geometry, material);
-        lineSegments.userData = lane;
-        this.scene.add(lineSegments);
-        this.hyperlaneLines.push(lineSegments);
+        const line = new THREE.Line(geometry, material);
+        line.userData = lane;
+        this.scene.add(line);
+        this.hyperlaneLines.push(line);
       }
     });
   }

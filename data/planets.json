@@ -25,7 +25,7 @@
     "terrain": "Forests, oceans, shipyards",
     "population": "3 Billion",
     "description": "Famed industrial hub known for shipyards that produced the Millennium Falcon and star destroyers.",
-    "hyperlanes": ["Corellian Run", "Corellian Trade Spine"]
+    "hyperlanes": ["Corellian Run", "Corellian Trade Spine", "Hydian Way"]
   },
   {
     "id": "alderaan",
@@ -95,7 +95,21 @@
     "terrain": "Canyons, mountains, ancient Jedi ruins",
     "population": "Uninhabited",
     "description": "Ancient cradle of the Jedi Order containing the sacred seeing stone.",
-    "hyperlanes": ["Deep Core Routes"]
+    "hyperlanes": ["Rimma Trade Route"]
+  },
+  {
+    "id": "byss",
+    "name": "Byss",
+    "region": "Deep Core",
+    "sector": "Deep Core Sector",
+    "grid": "K-11",
+    "coords": { "x": -15, "y": 8, "z": 5 },
+    "type": "terrestrial",
+    "climate": "Temperate",
+    "terrain": "Sith citadels, plateau oceans",
+    "population": "500 Million",
+    "description": "Secret dark side stronghold of Emperor Palpatine in the Deep Core.",
+    "hyperlanes": ["Deep Core Security Route"]
   },
   {
     "id": "naboo",
@@ -350,6 +364,62 @@
     "hyperlanes": ["Perlemian Trade Route"]
   },
   {
+    "id": "ryloth",
+    "name": "Ryloth",
+    "region": "Outer Rim",
+    "sector": "Gaulus Sector",
+    "grid": "R-17",
+    "coords": { "x": 120, "y": -10, "z": 140 },
+    "type": "desert",
+    "climate": "Tidally Locked / Arid",
+    "terrain": "Canyons, mesaglades, subterranean tunnels",
+    "population": "1.5 Billion Twi'leks",
+    "description": "Arid homeworld of the Twi'lek species, strategically located along the Corellian Run.",
+    "hyperlanes": ["Corellian Run"]
+  },
+  {
+    "id": "sullust",
+    "name": "Sullust",
+    "region": "Outer Rim",
+    "sector": "Sullust Sector",
+    "grid": "M-17",
+    "coords": { "x": 20, "y": -8, "z": 120 },
+    "type": "lava",
+    "climate": "Toxic / Volcanic",
+    "terrain": "Subterranean cities, lava pools",
+    "population": "18 Billion Sullustans",
+    "description": "Volcanic industrial hub where the Rebel Alliance fleet gathered before the Battle of Endor.",
+    "hyperlanes": ["Rimma Trade Route", "Sanctuary Pipeline"]
+  },
+  {
+    "id": "eriadu",
+    "name": "Eriadu",
+    "region": "Outer Rim",
+    "sector": "Seswenna Sector",
+    "grid": "M-18",
+    "coords": { "x": 20, "y": -12, "z": 140 },
+    "type": "city",
+    "climate": "Polluted / Temperate",
+    "terrain": "Factories, toxic seas, megacities",
+    "population": "22 Billion",
+    "description": "Homeworld of Grand Moff Tarkin and key junction for the Hydian Way and Rimma Trade Route.",
+    "hyperlanes": ["Hydian Way", "Rimma Trade Route"]
+  },
+  {
+    "id": "moraband",
+    "name": "Moraband (Korriban)",
+    "region": "Outer Rim",
+    "sector": "Esstran Sector",
+    "grid": "R-5",
+    "coords": { "x": 120, "y": 20, "z": -120 },
+    "type": "barren",
+    "climate": "Cold / Desolate",
+    "terrain": "Valley of the Dark Lords, obsidian tombs",
+    "population": "Uninhabited",
+    "description": "Ancient ancestral homeworld of the Sith, teeming with dark side energy and tombs.",
+    "hyperlanes": ["Esstran Route"]
+  },
+  {
     "id": "jakku",
     "name": "Jakku",
     "region": "Inner Rim",
@@ -390,6 +460,20 @@
     "population": "Caretakers & Lanai",
     "description": "Oceanic refuge where Luke Skywalker lived in self-imposed exile.",
     "hyperlanes": ["Wayfinder Path"]
+  },
+  {
+    "id": "csilla",
+    "name": "Csilla",
+    "region": "Unknown Regions",
+    "sector": "Chiss Ascendancy",
+    "grid": "F-8",
+    "coords": { "x": -120, "y": 10, "z": -60 },
+    "type": "ice",
+    "climate": "Glacial / Frozen",
+    "terrain": "Glaciers, subterranean cities",
+    "population": "8 Billion Chiss",
+    "description": "Frozen capital of the Chiss Ascendancy and homeworld of Grand Admiral Thrawn.",
+    "hyperlanes": ["Chiss Hyper-routes"]
   },
   {
     "id": "lothal",
