@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Star Wars 3D Galaxy Map</title>
+  <link rel="stylesheet" href="./css/style.css">
+
+  <!-- ES Module Import Map for Three.js and OrbitControls -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- WebGL 3D Canvas Container -->
+  <div id="canvas-container"></div>
+
+  <!-- Sci-Fi HUD Header -->
+  <header id="hud-header">
+    <div class="brand">
+      <div class="brand-icon"></div>
+      <div>
+        <h1>Star Wars Galaxy Map</h1>
+        <span>INTERSTELLAR CARTOGRAPHY 3D</span>
+      </div>
+    </div>
+
+    <div class="control-bar">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search system...">
+      </div>
+
+      <button id="btn-hyperlanes" class="btn-hud active" title="Toggle Hyperlanes">
+        <span>HYPERLANES</span>
+      </button>
+
+      <button id="btn-reset" class="btn-hud" title="Reset View">
+        <span>RESET CAMERA</span>
+      </button>
+
+      <button id="btn-audio" class="btn-hud" title="Toggle Ambient Audio">
+        <span>AUDIO HUM</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Region Filter Chips Bar -->
+  <nav id="region-bar">
+    <button class="chip-filter active" data-region="ALL">ALL REGIONS</button>
+    <button class="chip-filter" data-region="DEEP_CORE">DEEP CORE</button>
+    <button class="chip-filter" data-region="CORE_WORLDS">CORE WORLDS</button>
+    <button class="chip-filter" data-region="INNER_RIM">INNER RIM</button>
+    <button class="chip-filter" data-region="MID_RIM">MID RIM</button>
+    <button class="chip-filter" data-region="OUTER_RIM">OUTER RIM</button>
+    <button class="chip-filter" data-region="UNKNOWN_REGIONS">UNKNOWN REGIONS</button>
+  </nav>
+
+  <!-- Hover Tooltip -->
+  <div id="hover-tooltip">
+    <h3>Planet</h3>
+    <p>Region</p>
+  </div>
+
+  <!-- Planet Detail Info Sidebar -->
+  <aside id="info-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <h2 id="planet-name">Coruscant</h2>
+        <span id="planet-region" class="badge-region">Core Worlds</span>
+      </div>
+      <button id="btn-close-sidebar" class="btn-close">&times;</button>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item">
+        <div class="label">Sector</div>
+        <div id="planet-sector" class="value">Coruscant Sector</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Grid Position</div>
+        <div id="planet-grid" class="value">L-9</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Climate</div>
+        <div id="planet-climate" class="value">Temperate</div>
+      </div>
+      <div class="detail-item">
+        <div class="label">Population</div>
+        <div id="planet-population" class="value">1 Trillion</div>
+      </div>
+    </div>
+
+    <div class="detail-item" style="margin-bottom: 16px;">
+      <div class="label">Terrain</div>
+      <div id="planet-terrain" class="value">City-wide ecumenopolis</div>
+    </div>
+
+    <div id="planet-description" class="description-box">
+      The political heart of the galaxy, covered entirely by a colossal city spanning 5,127 levels.
+    </div>
+
+    <div class="hyperlanes-tag-box">
+      <h4>Connected Hyperlanes</h4>
+      <div id="planet-hyperlanes" class="tag-list">
+        <span class="tag-lane">Perlemian Trade Route</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Sci-Fi HUD Status Footer -->
+  <footer id="hud-footer">
+    <div class="status-dot"></div>
+    <span id="status-planet-count">INITIALIZING GALACTIC DATABASE...</span>
+    <span style="margin-left: auto; opacity: 0.5;">DEEP CORE ORIGIN (0,0,0)</span>
+  </footer>
+
+  <!-- App Entry Script -->
+  <script type="module" src="./js/app.js"></script>
+
+</body>
+</html>

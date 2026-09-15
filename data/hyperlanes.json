@@ -1,0 +1,44 @@
+[
+  {
+    "id": "perlemian",
+    "name": "Perlemian Trade Route",
+    "color": "#00f0ff",
+    "waypoints": ["coruscant", "chandrila", "kashyyyk", "yavin-4", "felucia", "mon-cala"]
+  },
+  {
+    "id": "corellian-run",
+    "name": "Corellian Run",
+    "color": "#ff007f",
+    "waypoints": ["coruscant", "corellia", "hosnian-prime", "takodana"]
+  },
+  {
+    "id": "hydian-way",
+    "name": "Hydian Way",
+    "color": "#39ff14",
+    "waypoints": ["alderaan", "kuat", "mandalore", "dathomir", "mustafar"]
+  },
+  {
+    "id": "rimma-trade-route",
+    "name": "Rimma Trade Route",
+    "color": "#ffaa00",
+    "waypoints": ["tython", "dagobah", "utapau"]
+  },
+  {
+    "id": "triellus-route",
+    "name": "Triellus Trade Route",
+    "color": "#b800ff",
+    "waypoints": ["scarif", "geonosis", "tatooine", "kessel"]
+  },
+  {
+    "id": "anoat-route",
+    "name": "Anoat Hyperlane Route",
+    "color": "#00aeff",
+    "waypoints": ["bespin", "hoth", "endor"]
+  },
+  {
+    "id": "wayfinder-path",
+    "name": "Secret Sith Wayfinder Path",
+    "color": "#ff0000",
+    "waypoints": ["coruscant", "ahch-to", "exegol"]
+  }
+]
