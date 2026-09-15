@@ -32,6 +32,19 @@ export class InteractionHandler {
 
     dom.addEventListener('pointermove', (e) => this.onPointerMove(e));
     dom.addEventListener('click', (e) => this.onClick(e));
+
+    // Immediately stop smooth animation if user begins dragging camera manually
+    if (this.controls) {
+      this.controls.addEventListener('start', () => {
+        this.stopCameraAnimation();
+      });
+    }
+  }
+
+  stopCameraAnimation() {
+    this.isAnimatingCamera = false;
+    this.targetCameraPos = null;
+    this.targetControlsTarget = null;
   }
 
   onPointerMove(e) {
@@ -150,11 +163,16 @@ export class InteractionHandler {
 
   update() {
     if (this.isAnimatingCamera && this.targetCameraPos && this.targetControlsTarget) {
-      this.camera.position.lerp(this.targetCameraPos, 0.08);
-      this.controls.target.lerp(this.targetControlsTarget, 0.08);
+      this.camera.position.lerp(this.targetCameraPos, 0.1);
+      this.controls.target.lerp(this.targetControlsTarget, 0.1);
 
-      if (this.camera.position.distanceTo(this.targetCameraPos) < 0.5) {
-        this.isAnimatingCamera = false;
+      const camDist = this.camera.position.distanceTo(this.targetCameraPos);
+      const targetDist = this.controls.target.distanceTo(this.targetControlsTarget);
+
+      if (camDist < 0.2 && targetDist < 0.2) {
+        this.camera.position.copy(this.targetCameraPos);
+        this.controls.target.copy(this.targetControlsTarget);
+        this.stopCameraAnimation();
       }
     }
   }
