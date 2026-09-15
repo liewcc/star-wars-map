@@ -256,15 +256,7 @@ export class GalaxyScene {
   animate() {
     requestAnimationFrame(() => this.animate());
 
-    // Slow galactic disk rotation
-    if (this.galaxyPoints) {
-      this.galaxyPoints.rotation.y += 0.0003;
-    }
-
-    // Rotate planets individually
-    this.planetMeshes.forEach((mesh) => {
-      mesh.rotation.y += 0.005;
-    });
+    // Galaxy points & planet meshes remain static by default to avoid visual motion sickness / dizziness
 
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
