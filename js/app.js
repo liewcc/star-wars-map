@@ -1,5 +1,5 @@
-import { GalaxyScene } from './galaxyScene.js?v=3.0.0';
-import { InteractionHandler } from './interaction.js?v=3.0.0';
+import { GalaxyScene } from './galaxyScene.js?v=4.0.0';
+import { InteractionHandler } from './interaction.js?v=4.0.0';
 
 class StarWarsGalaxyApp {
   constructor() {
@@ -122,16 +122,24 @@ class StarWarsGalaxyApp {
     });
   }
 
-  updateTooltip(planetData, event) {
+  updateTooltip(hoverData, event) {
     const tooltip = document.getElementById('hover-tooltip');
     if (!tooltip) return;
 
-    if (planetData) {
+    if (hoverData) {
       tooltip.style.display = 'block';
       tooltip.style.left = `${event.clientX}px`;
       tooltip.style.top = `${event.clientY}px`;
-      tooltip.querySelector('h3').textContent = planetData.name;
-      tooltip.querySelector('p').textContent = `${planetData.region} | Grid ${planetData.grid}`;
+
+      if (hoverData.isHyperlane) {
+        tooltip.querySelector('h3').textContent = hoverData.name;
+        tooltip.querySelector('p').textContent = `HYPERSPACE TRADE ROUTE (${hoverData.waypoints ? hoverData.waypoints.length : 0} WAYPOINTS)`;
+        tooltip.style.borderColor = hoverData.color || '#00f0ff';
+      } else {
+        tooltip.querySelector('h3').textContent = hoverData.name;
+        tooltip.querySelector('p').textContent = `${hoverData.region} | Grid ${hoverData.grid}`;
+        tooltip.style.borderColor = '#00f0ff';
+      }
     } else {
       tooltip.style.display = 'none';
     }

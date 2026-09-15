@@ -1,19 +1,23 @@
 import * as THREE from 'three';
 
 export class InteractionHandler {
-  constructor(galaxyScene, onPlanetSelect, onPlanetHover) {
+  constructor(galaxyScene, onPlanetSelect, onHover) {
     this.scene = galaxyScene.scene;
     this.camera = galaxyScene.camera;
     this.renderer = galaxyScene.renderer;
     this.controls = galaxyScene.controls;
     this.planetMeshes = galaxyScene.planetMeshes;
+    this.hyperlaneLines = galaxyScene.hyperlaneLines;
 
     this.onPlanetSelect = onPlanetSelect;
-    this.onPlanetHover = onPlanetHover;
+    this.onHover = onHover;
 
     this.raycaster = new THREE.Raycaster();
+    this.raycaster.params.Line.threshold = 4.0; // Increased threshold for easy hyperlane hover detection
+
     this.mouse = new THREE.Vector2();
     this.hoveredPlanet = null;
+    this.hoveredLane = null;
     this.selectedPlanet = null;
 
     this.isAnimatingCamera = false;
@@ -35,24 +39,57 @@ export class InteractionHandler {
     this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
     this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects = this.raycaster.intersectObjects(this.planetMeshes);
 
-    if (intersects.length > 0) {
-      const mesh = intersects[0].object;
+    // 1. Raycast Planets first
+    const planetIntersects = this.raycaster.intersectObjects(this.planetMeshes);
+
+    if (planetIntersects.length > 0) {
+      const mesh = planetIntersects[0].object;
       if (this.hoveredPlanet !== mesh) {
         if (this.hoveredPlanet) this.resetPlanetScale(this.hoveredPlanet);
+        if (this.hoveredLane) this.resetHyperlaneHighlight(this.hoveredLane);
+
         this.hoveredPlanet = mesh;
+        this.hoveredLane = null;
         this.highlightPlanet(mesh);
         document.body.style.cursor = 'pointer';
-        if (this.onPlanetHover) this.onPlanetHover(mesh.userData, e);
+
+        if (this.onHover) this.onHover(mesh.userData, e);
       }
-    } else {
-      if (this.hoveredPlanet) {
-        this.resetPlanetScale(this.hoveredPlanet);
+      return;
+    }
+
+    // 2. Raycast Hyperlanes if no planet is hit
+    const visibleLanes = this.hyperlaneLines.filter(l => l.visible);
+    const laneIntersects = this.raycaster.intersectObjects(visibleLanes);
+
+    if (laneIntersects.length > 0) {
+      const laneLine = laneIntersects[0].object;
+      if (this.hoveredLane !== laneLine) {
+        if (this.hoveredPlanet) this.resetPlanetScale(this.hoveredPlanet);
+        if (this.hoveredLane) this.resetHyperlaneHighlight(this.hoveredLane);
+
         this.hoveredPlanet = null;
-        document.body.style.cursor = 'default';
-        if (this.onPlanetHover) this.onPlanetHover(null, e);
+        this.hoveredLane = laneLine;
+        this.highlightHyperlane(laneLine);
+        document.body.style.cursor = 'pointer';
+
+        const laneData = { ...laneLine.userData, isHyperlane: true };
+        if (this.onHover) this.onHover(laneData, e);
       }
+      return;
+    }
+
+    // 3. Clear hover states if neither planet nor hyperlane hit
+    if (this.hoveredPlanet || this.hoveredLane) {
+      if (this.hoveredPlanet) this.resetPlanetScale(this.hoveredPlanet);
+      if (this.hoveredLane) this.resetHyperlaneHighlight(this.hoveredLane);
+
+      this.hoveredPlanet = null;
+      this.hoveredLane = null;
+      document.body.style.cursor = 'default';
+
+      if (this.onHover) this.onHover(null, e);
     }
   }
 
@@ -74,14 +111,23 @@ export class InteractionHandler {
     mesh.scale.set(1.0, 1.0, 1.0);
   }
 
+  highlightHyperlane(line) {
+    if (line.material) {
+      line.material.opacity = 1.0;
+    }
+  }
+
+  resetHyperlaneHighlight(line) {
+    if (line.material) {
+      line.material.opacity = 0.85;
+    }
+  }
+
   selectPlanet(planetMesh) {
     this.selectedPlanet = planetMesh;
     const data = planetMesh.userData;
 
-    // Smooth focus animation target
     const planetPos = planetMesh.position.clone();
-    
-    // Offset camera slightly backwards and upwards
     const offset = new THREE.Vector3(0, 8, 20);
     const targetCam = planetPos.clone().add(offset);
 
