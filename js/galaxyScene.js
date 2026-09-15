@@ -211,26 +211,46 @@ export class GalaxyScene {
     });
   }
 
+  parseGridToCoords(gridStr) {
+    if (!gridStr || typeof gridStr !== 'string') return { x: 0, y: 0, z: 0 };
+    const match = gridStr.trim().toUpperCase().match(/^([A-Z]+)-?(\d+)$/);
+    if (!match) return { x: 0, y: 0, z: 0 };
+
+    const colStr = match[1];
+    const rowNum = parseInt(match[2], 10);
+
+    const colCode = colStr.charCodeAt(0) - 64; // A=1, C=3, L=12, U=21
+    const x = (colCode - 12) * 20;
+    const z = (rowNum - 11) * 20;
+    const y = (Math.random() - 0.5) * 6;
+
+    return { x, y, z };
+  }
+
   loadPlanets(planetsData) {
-    // Increased planet mesh size to 3.2 for crisp readability!
     const sphereGeo = new THREE.SphereGeometry(3.2, 32, 32);
 
     planetsData.forEach((planet) => {
-      const canvasTexture = generatePlanetTexture(planet.type, planet.id);
+      // Automatic Grid (e.g. "R-16") to 3D Coordinates converter
+      if (!planet.coords || typeof planet.coords.x !== 'number') {
+        planet.coords = this.parseGridToCoords(planet.grid);
+      }
+
+      const canvasTexture = generatePlanetTexture(planet.type, planet.id, planet.color);
       const texture = new THREE.CanvasTexture(canvasTexture);
 
       const material = new THREE.MeshStandardMaterial({
         map: texture,
         roughness: 0.5,
         metalness: 0.2,
-        emissive: new THREE.Color(0x222222)
+        emissive: planet.color ? new THREE.Color(planet.color).multiplyScalar(0.3) : new THREE.Color(0x222222)
       });
 
       const mesh = new THREE.Mesh(sphereGeo, material);
-      mesh.position.set(planet.coords.x, planet.coords.y, planet.coords.z);
+      mesh.position.set(planet.coords.x, planet.coords.y || 0, planet.coords.z);
       mesh.userData = planet;
 
-      const glowSprite = this.createAtmosphereGlow(planet.type);
+      const glowSprite = this.createAtmosphereGlow(planet.type, planet.color);
       mesh.add(glowSprite);
 
       if (planet.type === 'ringed') {
@@ -254,18 +274,22 @@ export class GalaxyScene {
     });
   }
 
-  createAtmosphereGlow(type) {
+  createAtmosphereGlow(type, customColor) {
     const canvas = document.createElement('canvas');
     canvas.width = 64;
     canvas.height = 64;
     const ctx = canvas.getContext('2d');
 
     let glowColor = 'rgba(56, 189, 248, 0.6)';
-    if (type === 'desert') glowColor = 'rgba(234, 179, 8, 0.6)';
-    if (type === 'lava') glowColor = 'rgba(239, 68, 68, 0.7)';
-    if (type === 'ice') glowColor = 'rgba(224, 242, 254, 0.6)';
-    if (type === 'city') glowColor = 'rgba(251, 191, 36, 0.6)';
-    if (type === 'forest') glowColor = 'rgba(74, 222, 128, 0.6)';
+    if (customColor) {
+      glowColor = customColor;
+    } else {
+      if (type === 'desert') glowColor = 'rgba(234, 179, 8, 0.6)';
+      if (type === 'lava') glowColor = 'rgba(239, 68, 68, 0.7)';
+      if (type === 'ice') glowColor = 'rgba(224, 242, 254, 0.6)';
+      if (type === 'city') glowColor = 'rgba(251, 191, 36, 0.6)';
+      if (type === 'forest') glowColor = 'rgba(74, 222, 128, 0.6)';
+    }
 
     const grad = ctx.createRadialGradient(32, 32, 12, 32, 32, 32);
     grad.addColorStop(0, glowColor);

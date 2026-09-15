@@ -1,7 +1,7 @@
 // Procedural Planet Texture Generator using HTML5 Canvas
 // Generates HD textures locally without external image asset dependencies
 
-export function generatePlanetTexture(type, id) {
+export function generatePlanetTexture(type, id, customColor) {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 256;
@@ -16,6 +16,18 @@ export function generatePlanetTexture(type, id) {
     let x = Math.sin(seed++) * 10000;
     return x - Math.floor(x);
   };
+
+  if (customColor) {
+    ctx.fillStyle = customColor;
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+    for (let i = 0; i < 40; i++) {
+      ctx.beginPath();
+      ctx.arc(random() * w, random() * h, random() * 40 + 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    return canvas;
+  }
 
   switch (type) {
     case 'city': // Coruscant style ecumenopolis
