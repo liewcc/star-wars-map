@@ -1,44 +1,32 @@
 [
   {
     "id": "perlemian",
-    "name": "Perlemian Trade Route",
+    "name": "1. Perlemian Trade Route",
     "color": "#00f0ff",
     "waypoints": ["coruscant", "chandrila", "kashyyyk", "yavin-4", "felucia", "mon-cala"]
   },
   {
     "id": "corellian-run",
-    "name": "Corellian Run",
-    "color": "#ff007f",
-    "waypoints": ["coruscant", "corellia", "hosnian-prime", "takodana"]
+    "name": "2. Corellian Run",
+    "color": "#ff2a2a",
+    "waypoints": ["coruscant", "corellia", "hosnian-prime", "scarif", "geonosis", "tatooine"]
   },
   {
-    "id": "hydian-way",
-    "name": "Hydian Way",
-    "color": "#39ff14",
-    "waypoints": ["alderaan", "kuat", "mandalore", "dathomir", "mustafar"]
+    "id": "corellian-spine",
+    "name": "3. Corellian Trade Spine",
+    "color": "#ffea00",
+    "waypoints": ["corellia", "takodana", "bespin", "hoth"]
   },
   {
     "id": "rimma-trade-route",
-    "name": "Rimma Trade Route",
-    "color": "#ffaa00",
-    "waypoints": ["tython", "dagobah", "utapau"]
+    "name": "4. Rimma Trade Route",
+    "color": "#00ff66",
+    "waypoints": ["tython", "dagobah", "utapau", "mustafar"]
   },
   {
-    "id": "triellus-route",
-    "name": "Triellus Trade Route",
-    "color": "#b800ff",
-    "waypoints": ["scarif", "geonosis", "tatooine", "kessel"]
-  },
-  {
-    "id": "anoat-route",
-    "name": "Anoat Hyperlane Route",
-    "color": "#00aeff",
-    "waypoints": ["bespin", "hoth", "endor"]
-  },
-  {
-    "id": "wayfinder-path",
-    "name": "Secret Sith Wayfinder Path",
-    "color": "#ff0000",
-    "waypoints": ["coruscant", "ahch-to", "exegol"]
+    "id": "hydian-way",
+    "name": "5. Hydian Way",
+    "color": "#d000ff",
+    "waypoints": ["cantonica", "yavin-4", "mandalore", "dathomir", "lothal", "alderaan", "kuat", "mustafar"]
   }
 ]
